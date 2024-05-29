@@ -5,7 +5,6 @@ const connectDB = async () => {
   try {
     const connectionString = process.env.MONGODB_CONNECTION_STRING;
     if (connectionString) {
-      //asynchronous JavaScript code to pause the execution of a function until a promise is resolved or rejected
       const connect = await mongoose.connect(connectionString);
       console.log(
         "Database Connected !",
