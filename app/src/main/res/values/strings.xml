@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Travelogue-Blog-App</string>
+    <string name="app_name">Travelogue</string>
+    <string name="app_subtitle">Share Your Travel Experience</string>
 </resources>
