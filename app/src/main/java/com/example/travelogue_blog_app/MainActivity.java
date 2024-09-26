@@ -1,4 +1,4 @@
-package com.example.blog_app_mobile;
+package com.example.travelogue_blog_app;
 
 import android.os.Bundle;
 

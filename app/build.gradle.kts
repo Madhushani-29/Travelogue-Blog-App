@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.blog_app_mobile"
+    namespace = "com.example.travelogue_blog_app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.blog_app_mobile"
+        applicationId = "com.example.travelogue_blog_app"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
