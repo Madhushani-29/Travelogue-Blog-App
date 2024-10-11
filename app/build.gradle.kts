@@ -40,7 +40,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    // google material, recyclerview, image cropper and circular image dependency add
+    implementation(libs.material)
+    implementation(libs.recyclerview)
+    implementation("com.vanniktech:android-image-cropper:4.6.0")
+    implementation(libs.circularimageview)
 }
