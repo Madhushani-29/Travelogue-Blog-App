@@ -15,7 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     // ui components
-    private FloatingActionButton addBlogBtn;
+    private FloatingActionButton navigateAddBlogsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //initialize views
-        addBlogBtn=findViewById(R.id.addBlogButton);
+        navigateAddBlogsBtn=findViewById(R.id.addBlogButton);
 
         // add onclick listener to add button to navigate add blog page
-        addBlogBtn.setOnClickListener(new View.OnClickListener() {
+        navigateAddBlogsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AddUpdateBlogActivity.class));

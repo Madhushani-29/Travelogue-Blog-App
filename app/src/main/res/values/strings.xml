@@ -8,5 +8,5 @@
     <string name="title_hint">Enter Your Hint</string>
     <string name="content_hint">Enter Your Content</string>
     <string name="location_hint">Enter Travel Destination</string>
-    <string name="createBlogTitle">Create New Blog</string>
+    <string name="addBlogTitle">Add Blog</string>
 </resources>

@@ -10,23 +10,12 @@
     tools:context=".AddUpdateBlogActivity">
 
     <TextView
-        android:id="@+id/pageTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/createBlogTitle"
-        android:textSize="30dp"
-        android:textColor="@color/teal_700"
-        android:textStyle="bold"
-
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
         android:id="@+id/titleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_label"
-        android:layout_below="@id/pageTitle"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:id="@+id/blogTitle"
@@ -35,7 +24,9 @@
         android:layout_below="@id/titleLabel"
         android:inputType="textPersonName|textCapWords"
         android:hint="@string/title_hint"
-        android:textSize="16dp"/>
+        android:textSize="16dp"
+        android:background="@drawable/shape_rectangle"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/contentLabel"
@@ -44,7 +35,8 @@
         android:layout_below="@id/blogTitle"
         android:layout_marginTop="16dp"
         android:text="@string/content_label"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:id="@+id/blogContent"
@@ -54,9 +46,11 @@
         android:inputType="textMultiLine|textCapSentences"
         android:gravity="top"
         android:hint="@string/content_hint"
-        android:minLines="1"
+        android:minLines="3"
         android:maxLines="5"
-        android:textSize="16dp"/>
+        android:textSize="16dp"
+        android:background="@drawable/shape_rectangle"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/locationLabel"
@@ -65,7 +59,8 @@
         android:layout_below="@id/blogContent"
         android:layout_marginTop="16dp"
         android:text="@string/location_label"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:id="@+id/blogLocation"
@@ -74,7 +69,9 @@
         android:layout_below="@id/locationLabel"
         android:inputType="textPersonName|textCapWords"
         android:hint="@string/location_hint"
-        android:textSize="16dp"/>
+        android:textSize="16dp"
+        android:background="@drawable/shape_rectangle"
+        android:padding="5dp"/>
 
     <TextView
         android:id="@+id/imageLabel"
@@ -101,6 +98,7 @@
             android:src="@drawable/ic_addphoto"
             android:scaleType="centerInside"/>
     </FrameLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/createButton"
         android:layout_width="56dp"
@@ -109,5 +107,4 @@
         android:layout_alignParentEnd="true"
         android:backgroundTint="@color/teal_700"
         app:srcCompat="@drawable/ic_done" />
-
 </RelativeLayout>
