@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Travelogue</string>
     <string name="app_subtitle">Share Your Travel Experience</string>
+    <string name="title_label">Title</string>
+    <string name="content_label">Content</string>
+    <string name="image_label">Blog Image</string>
+    <string name="location_label">Location</string>
+    <string name="title_hint">Enter Your Hint</string>
+    <string name="content_hint">Enter Your Content</string>
+    <string name="location_hint">Enter Travel Destination</string>
+    <string name="createBlogTitle">Create New Blog</string>
 </resources>
