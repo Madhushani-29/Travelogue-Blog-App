@@ -46,6 +46,6 @@ dependencies {
     // google material, recyclerview, image cropper and circular image dependency add
     implementation(libs.material)
     implementation(libs.recyclerview)
-    implementation("com.vanniktech:android-image-cropper:4.6.0")
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation(libs.circularimageview)
 }

@@ -1,15 +1,19 @@
 package com.example.travelogue_blog_app;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +25,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.Manifest;
 import android.widget.Toast;
 
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AddUpdateBlogActivity extends AppCompatActivity {
@@ -124,9 +130,24 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
     }
 
     private void pickFromGallery() {
+        // intent to select image
+        Intent galleryIntent =new Intent(Intent.ACTION_PICK);
+        // only get images
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
     }
 
     private void pickFromCamera() {
+        // pick image from camera
+        ContentValues values=new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "Image title");
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+        // image uri
+        imageUri =getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        // intent to open camera
+        Intent cameraIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
     }
 
     // check storage permission is enabled or no
@@ -198,5 +219,27 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
             }
             break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // image picked from camera received here
+        if (resultCode==RESULT_OK){
+            if (requestCode==IMAGE_PICK_GALLERY_CODE){
+                // crop image
+                CropImage.activity(data.getData())
+                        .setGuideline(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1, 1)
+                        .start(this);
+            } else if (requestCode==IMAGE_PICK_CAMERA_CODE) {
+                // crop image
+                CropImage.activity(imageUri)
+                        .setGuideline(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1, 1)
+                        .start(this);
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
