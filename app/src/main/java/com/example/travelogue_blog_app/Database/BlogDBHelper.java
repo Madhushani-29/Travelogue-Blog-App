@@ -2,10 +2,13 @@ package com.example.travelogue_blog_app.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.travelogue_blog_app.Database.Constants;
+import com.example.travelogue_blog_app.Model.BlogModel;
+import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
@@ -55,4 +58,63 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // get all data from a table
+    public ArrayList<BlogModel> getAllBlogs(String orderBy){
+        ArrayList<BlogModel> blogList=new ArrayList<>();
+        String selectQuery="SELECT * FROM " +
+                Constants.TABLE_NAME +
+                " ORDER BY " +
+                orderBy;
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor cursor=db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()){
+            do {
+                // Safely retrieve the column values
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_TITLE));
+                String content = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
+                String image = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+
+                // Create a new BlogModel and add it to the list
+                BlogModel blogModel = new BlogModel(id, title, content, location, image);
+                blogList.add(blogModel);
+            } while (cursor.moveToNext());
+        }
+        // close connection
+        db.close();
+        return blogList;
+    }
+
+    // search blogs from a table
+    public ArrayList<BlogModel> searchBlogs(String query){
+        ArrayList<BlogModel> blogList=new ArrayList<>();
+        String selectQuery = "SELECT * FROM " +
+                Constants.TABLE_NAME +
+                " WHERE " +
+                Constants.C_TITLE +
+                " LIKE '%" +
+                query +
+                "%'";
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor cursor=db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()){
+            do {
+                // Safely retrieve the column values
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_TITLE));
+                String content = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
+                String image = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+
+                // Create a new BlogModel and add it to the list
+                BlogModel blogModel = new BlogModel(id, title, content, location, image);
+                blogList.add(blogModel);
+            } while (cursor.moveToNext());
+        }
+        // close connection
+        db.close();
+        return blogList;
+    }
 }
