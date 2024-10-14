@@ -1,10 +1,12 @@
-package com.example.travelogue_blog_app;
+package com.example.travelogue_blog_app.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import com.example.travelogue_blog_app.R;
+
 
 public class SplashActivity extends AppCompatActivity {
 

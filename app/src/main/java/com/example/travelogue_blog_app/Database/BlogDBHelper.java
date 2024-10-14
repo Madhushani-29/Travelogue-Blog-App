@@ -53,4 +53,6 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
         return id;
     }
+
+    // get all data from a table
 }

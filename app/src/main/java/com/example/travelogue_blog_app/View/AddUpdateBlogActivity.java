@@ -1,4 +1,4 @@
-package com.example.travelogue_blog_app;
+package com.example.travelogue_blog_app.View;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -21,7 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.widget.Toast;
-
+import com.example.travelogue_blog_app.R;
 
 import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
