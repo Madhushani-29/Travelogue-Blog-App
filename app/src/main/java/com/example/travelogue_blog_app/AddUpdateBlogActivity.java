@@ -19,14 +19,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.Manifest;
 import android.widget.Toast;
 
-import com.canhub.cropper.CropImage;
-import com.canhub.cropper.CropImageView;
+
+import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AddUpdateBlogActivity extends AppCompatActivity {
@@ -49,8 +46,12 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
     // only storage
     private String[] storagePermissions;
 
-    // image uri
+    // image uri and other data to save
     private Uri imageUri;
+    private String title, content, location;
+
+    //db helper
+    private BlogDBHelper dbHelper;
 
     //action bar
     private ActionBar actionBar;
@@ -76,6 +77,9 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         locationInputField=findViewById(R.id.blogLocation);
         imageView=findViewById(R.id.blogImage);
 
+        // init db helper
+        dbHelper=new BlogDBHelper(this);
+
         // init permission array
         cameraPermissions=new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions=new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -92,8 +96,25 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         createBlogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveData();
             }
         });
+    }
+
+    private void saveData() {
+        // get data
+        title=""+titleInputField.getText().toString().trim();
+        content=""+contentInputField.getText().toString().trim();
+        location=""+locationInputField.getText().toString().trim();
+
+        // save to db
+        long id=dbHelper.insertData(
+                ""+title,
+                ""+content,
+                ""+location,
+                ""+imageUri
+        );
+        Toast.makeText(this, "Blog created successfully!", Toast.LENGTH_SHORT).show();
     }
 
     // display image picker dialog
@@ -226,20 +247,22 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         // image picked from camera received here
         if (resultCode==RESULT_OK){
             if (requestCode==IMAGE_PICK_GALLERY_CODE){
-                // crop image
-                CropImage.activity(data.getData())
-                        .setGuideline(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1, 1)
-                        .start(this);
+                Uri selectedImageUri = data != null ? data.getData() : null;
+                if (selectedImageUri != null){
+                    imageUri = selectedImageUri;
+                    // set image
+                    imageView.setImageURI(selectedImageUri);
+                } else {
+                    Toast.makeText(this, "Failed to select image!", Toast.LENGTH_SHORT).show();
+                }
             } else if (requestCode==IMAGE_PICK_CAMERA_CODE) {
-                // crop image
-                CropImage.activity(imageUri)
-                        .setGuideline(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1, 1)
-                        .start(this);
+                if (imageUri != null){
+                    imageView.setImageURI(imageUri);
+                } else {
+                    Toast.makeText(this, "Failed to capture image!", Toast.LENGTH_SHORT).show();
+                }
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

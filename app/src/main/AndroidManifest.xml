@@ -32,13 +32,8 @@
         <activity
             android:name=".AddUpdateBlogActivity"
             android:exported="false" />
-        <activity
-            android:name="com.canhub.cropper.CropImageActivity"
-            android:theme="@style/Theme.TravelogueBlogApp" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

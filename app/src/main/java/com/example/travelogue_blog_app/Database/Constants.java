@@ -1,4 +1,4 @@
-package com.example.travelogue_blog_app;
+package com.example.travelogue_blog_app.Database;
 
 public class Constants {
     // database name
@@ -17,11 +17,11 @@ public class Constants {
 
     //table create sql query
     public static final String CREATE_TABLE=
-            "CREATE TABLE" + TABLE_NAME + "("
+            "CREATE TABLE " + TABLE_NAME + "("
                     + C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + C_TITLE + " TEXT,"
                     + C_CONTENT + " TEXT,"
                     + C_LOCATION + " TEXT,"
-                    + C_IMAGE + " TEXT,"
+                    + C_IMAGE + " TEXT"
             + ")";
 }

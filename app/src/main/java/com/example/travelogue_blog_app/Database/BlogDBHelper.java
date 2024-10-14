@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.travelogue_blog_app.Constants;
+import com.example.travelogue_blog_app.Database.Constants;
 
 import javax.annotation.Nullable;
 
