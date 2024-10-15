@@ -117,4 +117,13 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.close();
         return blogList;
     }
+
+    public int getBlogCount(){
+        String countQuery="SELECT * FROM "+Constants.TABLE_NAME;
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor=db.rawQuery(countQuery, null);
+        int count= cursor.getCount();
+        db.close();
+        return count;
+    }
 }

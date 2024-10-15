@@ -1,6 +1,7 @@
 package com.example.travelogue_blog_app.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelogue_blog_app.Model.BlogModel;
 import com.example.travelogue_blog_app.R;
+import com.example.travelogue_blog_app.View.ViewBlogActivity;
 
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
     private Context context;
     private ArrayList<BlogModel> blogList;
 
-    public BlogAdapter(ArrayList<BlogModel> blogList, Context context) {
+    public BlogAdapter(Context context, ArrayList<BlogModel> blogList) {
         this.blogList = blogList;
         this.context = context;
     }
@@ -54,6 +56,9 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent=new Intent(context, ViewBlogActivity.class);
+                intent.putExtra("BLOG_ID", id);
+                context.startActivity(intent);
             }
         });
 
@@ -73,18 +78,18 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
 
     class BlogHolder extends RecyclerView.ViewHolder{
         // views
-        ImageView image;
-        TextView title, content, location;
-        ImageButton moreButton;
+        private ImageView image;
+        private TextView title, content, location;
+        private ImageButton moreButton;
 
         public BlogHolder(@NonNull View itemView) {
             super(itemView);
 
             // init views
             image=itemView.findViewById(R.id.blogImage);
-            title=itemView.findViewById(R.id.blogTitle);
-            content=itemView.findViewById(R.id.blogContent);
-            location=itemView.findViewById(R.id.blogLocation);
+            title=itemView.findViewById(R.id.titleText);
+            content=itemView.findViewById(R.id.contentText);
+            location=itemView.findViewById(R.id.locationText);
             moreButton=itemView.findViewById(R.id.moreButton);
         }
     }
