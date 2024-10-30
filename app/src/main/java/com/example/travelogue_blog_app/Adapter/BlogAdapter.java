@@ -1,6 +1,8 @@
 package com.example.travelogue_blog_app.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelogue_blog_app.Model.BlogModel;
 import com.example.travelogue_blog_app.R;
+import com.example.travelogue_blog_app.View.AddUpdateBlogActivity;
 import com.example.travelogue_blog_app.View.ViewBlogActivity;
 
 import java.util.ArrayList;
@@ -66,8 +69,48 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
         holder.moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showMoreDialog(
+                        ""+id,
+                        ""+title,
+                        ""+content,
+                        ""+location,
+                        ""+image
+                );
             }
         });
+    }
+
+    private void showMoreDialog(String id, String title, String content, String location, String image) {
+        // options to display in the menu
+        String [] options= {"Update", "Delete"};
+
+        // dialog
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        // add items to the dialog
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // handle item clicks
+                if (which==0){
+                    // when update click
+                    // start AddUpdateBolgActivity to update the existing record
+                    Intent intent = new Intent(context, AddUpdateBlogActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("title", title);
+                    intent.putExtra("content", content);
+                    intent.putExtra("location", location);
+                    intent.putExtra("image", image);
+                    // say this is a update operation
+                    intent.putExtra("isEditMode", true);
+                    context.startActivity(intent);
+                }
+                else if (which==1) {
+                }
+            }
+        });
+
+        // show the menu
+        builder.show();
     }
 
     @Override

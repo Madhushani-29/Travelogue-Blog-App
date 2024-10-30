@@ -52,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
         navigateAddBlogsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddUpdateBlogActivity.class));
+                // click to start add record activity
+                Intent intent=new Intent(MainActivity.this, AddUpdateBlogActivity.class);
+                // not a update
+                intent.putExtra("isEditMode", false);
+                startActivity(intent);
             }
         });
     }

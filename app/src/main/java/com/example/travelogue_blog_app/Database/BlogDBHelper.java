@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 import com.example.travelogue_blog_app.Database.Constants;
 import com.example.travelogue_blog_app.Model.BlogModel;
 import java.util.ArrayList;
@@ -55,6 +57,29 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.close();
 
         return id;
+    }
+
+    // update data
+    public void updateData(String id, String title, String content, String location, String image){
+        // need to write data
+        // then get a writable database
+        SQLiteDatabase db=this.getWritableDatabase();
+
+        ContentValues values=new ContentValues();
+
+        // id increment auto in query
+        // insert other data
+        values.put(Constants.C_TITLE, title);
+        values.put(Constants.C_CONTENT, content);
+        values.put(Constants.C_LOCATION, location);
+        values.put(Constants.C_IMAGE, image);
+
+        // update row
+        // return record id of saved blog
+        db.update(Constants.TABLE_NAME, values, Constants.C_ID +" =?", new String[] {id});
+
+        // close db connection
+        db.close();
     }
 
     // get all data from a table

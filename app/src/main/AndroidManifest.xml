@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- camera and storage permission -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- camera permission required but camera is not required for its functions -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -22,7 +22,7 @@
             android:name=".View.ViewBlogActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".View.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -32,10 +32,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".View.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".AddUpdateBlogActivity"
+            android:name=".View.AddUpdateBlogActivity"
             android:exported="false" />
 
         <meta-data

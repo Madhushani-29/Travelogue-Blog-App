@@ -47,7 +47,10 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
 
     // image uri and other data to save
     private Uri imageUri;
-    private String title, content, location;
+    private String id, title, content, location;
+
+    // use to check update or create operation
+    private boolean isUpdateMode;
 
     //db helper
     private BlogDBHelper dbHelper;
@@ -75,6 +78,34 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         contentInputField=findViewById(R.id.blogContent);
         locationInputField=findViewById(R.id.blogLocation);
         imageView=findViewById(R.id.blogImage);
+
+        // get data from intents
+        Intent intent =getIntent();
+        isUpdateMode = intent.getBooleanExtra("isEditMode", false);
+
+        if (isUpdateMode){
+            actionBar.setTitle("Update Blog");
+
+            id = intent.getStringExtra("id");
+            title = intent.getStringExtra("title");
+            content = intent.getStringExtra("content");
+            location = intent.getStringExtra("location");
+            imageUri=Uri.parse(intent.getStringExtra("image"));
+
+            titleInputField.setText(title);
+            contentInputField.setText(content);
+            locationInputField.setText(location);
+
+            if (imageUri.toString().equals("null")){
+                imageView.setImageResource(R.drawable.ic_addphoto);
+            }
+            else {
+                imageView.setImageURI(imageUri);
+            }
+        }
+        else {
+            actionBar.setTitle("Add New Blog");
+        }
 
         // init db helper
         dbHelper=new BlogDBHelper(this);
@@ -106,14 +137,34 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         content=""+contentInputField.getText().toString().trim();
         location=""+locationInputField.getText().toString().trim();
 
-        // save to db
-        long id=dbHelper.insertData(
-                ""+title,
-                ""+content,
-                ""+location,
-                ""+imageUri
-        );
-        Toast.makeText(this, "Blog created successfully!", Toast.LENGTH_SHORT).show();
+        if (isUpdateMode){
+            dbHelper.updateData(
+                    ""+id,
+                    ""+title,
+                    ""+content,
+                    ""+location,
+                    ""+imageUri
+            );
+            Toast.makeText(this, "Blog updated successfully!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            // save to db
+            long id=dbHelper.insertData(
+                    ""+title,
+                    ""+content,
+                    ""+location,
+                    ""+imageUri
+            );
+            Toast.makeText(this, "Blog created successfully!", Toast.LENGTH_SHORT).show();
+        }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        // FLAG_ACTIVITY_CLEAR_TOP clear all activities on MainActivity in the back stack
+        // FLAG_ACTIVITY_NEW_TASK clear all activities on MainActivity in the back stack
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        // closes the current activity
+        finish();
     }
 
     // display image picker dialog
