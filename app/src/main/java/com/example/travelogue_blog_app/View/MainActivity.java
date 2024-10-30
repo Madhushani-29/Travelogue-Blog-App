@@ -1,5 +1,6 @@
 package com.example.travelogue_blog_app.View;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +33,16 @@ public class MainActivity extends AppCompatActivity {
     // action bar
     ActionBar actionBar;
 
+    // sort options
+    String orderByTitleAsc=Constants.C_TITLE + " ASC";
+    String orderByTitleDesc=Constants.C_TITLE + " DESC";
+    String orderByLocationAsc=Constants.C_LOCATION + " ASC";
+    String orderByLocationDesc=Constants.C_LOCATION + " DESC";
+    String orderByID=Constants.C_ID + " ASC";
+
+    // for refreshing use the last selected sorting
+    String currentOrderByStatus=orderByID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +57,9 @@ public class MainActivity extends AppCompatActivity {
         
         // init db helper
         dbHelper=new BlogDBHelper(this);
-        
-        retrieveBlogs();
+
+        // by default sort by id
+        retrieveBlogs(orderByID);
 
         // add onclick listener to add button to navigate add blog page
         navigateAddBlogsBtn.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +74,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void retrieveBlogs() {
+    private void retrieveBlogs(String orderBy) {
+        currentOrderByStatus=orderBy;
         BlogAdapter blogAdapter=new BlogAdapter(MainActivity.this,
-                dbHelper.getAllBlogs(Constants.C_ID + " ASC"));
+                dbHelper.getAllBlogs(orderBy));
         blogCard.setAdapter(blogAdapter);
 
         // set title as no of blogs created
@@ -79,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        retrieveBlogs();
+        // by default sort by id
+        retrieveBlogs(currentOrderByStatus);
     }
 
     @Override
@@ -107,6 +122,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // handle menu items
+        int id=item.getItemId();
+        if (id==R.id.action_sort){
+            // show sort options
+            sortOptionDialog();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sortOptionDialog() {
+        // options to display
+        String [] options={
+                "Title Ascending",
+                "Title Descending",
+                "Location Ascending",
+                "Title Descending"
+        };
+        // dialog
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("Sort By").setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).create().show(); // display dialog
     }
 }
