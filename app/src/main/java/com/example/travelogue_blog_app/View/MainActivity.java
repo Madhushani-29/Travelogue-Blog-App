@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // by default sort by id
         retrieveBlogs(currentOrderByStatus);
@@ -127,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
         if (id==R.id.action_sort){
             // show sort options
             sortOptionDialog();
+        } else if (id==R.id.action_delete_all) {
+            dbHelper.deleteAllBlogs();
+            onResume();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -15,9 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.example.travelogue_blog_app.Model.BlogModel;
 import com.example.travelogue_blog_app.R;
 import com.example.travelogue_blog_app.View.AddUpdateBlogActivity;
+import com.example.travelogue_blog_app.View.MainActivity;
 import com.example.travelogue_blog_app.View.ViewBlogActivity;
 
 import java.util.ArrayList;
@@ -26,9 +28,13 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
     private Context context;
     private ArrayList<BlogModel> blogList;
 
+    BlogDBHelper dbHelper;
+
     public BlogAdapter(Context context, ArrayList<BlogModel> blogList) {
         this.blogList = blogList;
         this.context = context;
+
+        dbHelper=new BlogDBHelper(context);
     }
 
     @NonNull
@@ -80,7 +86,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
         });
     }
 
-    private void showMoreDialog(String id, String title, String content, String location, String image) {
+    private void showMoreDialog(final String id, final String title, final String content, final String location, final String image) {
         // options to display in the menu
         String [] options= {"Update", "Delete"};
 
@@ -105,6 +111,10 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
                     context.startActivity(intent);
                 }
                 else if (which==1) {
+                    // when delete click
+                    dbHelper.deleteBlogById(id);
+                    // refresh blogs by calling onResume
+                    ((MainActivity) context) .onResume();
                 }
             }
         });

@@ -143,6 +143,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         return blogList;
     }
 
+    // get total blog count
     public int getBlogCount(){
         String countQuery="SELECT * FROM "+Constants.TABLE_NAME;
         SQLiteDatabase db=this.getReadableDatabase();
@@ -150,5 +151,19 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         int count= cursor.getCount();
         db.close();
         return count;
+    }
+
+    // delete single blog
+    public void deleteBlogById(String id){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(Constants.TABLE_NAME, Constants.C_ID+ " =?", new String [] {id});
+        db.close();
+    }
+
+    // delete all blogs
+    public void deleteAllBlogs(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + Constants.TABLE_NAME);
+        db.close();
     }
 }
