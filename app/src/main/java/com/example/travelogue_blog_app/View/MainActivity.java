@@ -137,14 +137,23 @@ public class MainActivity extends AppCompatActivity {
                 "Title Ascending",
                 "Title Descending",
                 "Location Ascending",
-                "Title Descending"
+                "Location Descending"
         };
         // dialog
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Sort By").setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                // handle options click
+                if (which==0){
+                    retrieveBlogs(orderByTitleAsc);
+                } else if (which==1) {
+                    retrieveBlogs(orderByTitleDesc);
+                } else if (which==2) {
+                    retrieveBlogs(orderByLocationAsc);
+                } else if (which==3) {
+                    retrieveBlogs(orderByLocationDesc);
+                }
             }
         }).create().show(); // display dialog
     }
