@@ -9,4 +9,6 @@
     <string name="content_hint">Enter Your Content</string>
     <string name="location_hint">Enter Travel Destination</string>
     <string name="addBlogTitle">Add Blog</string>
+    <string name="share_blog">Share Blog</string>
+
 </resources>

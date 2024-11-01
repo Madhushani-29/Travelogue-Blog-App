@@ -50,5 +50,15 @@
             android:textColor="@color/black"
             android:text="Content"
             android:paddingTop="10dp"/>
+
+        <Button
+            android:id="@+id/shareEmailButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_share_email"
+            android:padding="10dp"
+            android:text="Share via Email"
+            android:textColor="@color/black"/>
     </LinearLayout>
 </ScrollView>
