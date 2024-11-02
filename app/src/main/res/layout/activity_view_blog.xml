@@ -50,7 +50,6 @@
             android:textColor="@color/black"
             android:text="Content"
             android:paddingTop="10dp"/>
-
         <Button
             android:id="@+id/shareEmailButton"
             android:layout_width="wrap_content"
@@ -59,6 +58,27 @@
             android:drawableLeft="@drawable/ic_share_email"
             android:padding="10dp"
             android:text="Share via Email"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:drawablePadding="8dp"/>
+        <Button
+            android:id="@+id/shareFacebookButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_share_facebook"
+            android:padding="10dp"
+            android:text="Post on Facebook"
+            android:textColor="@color/black"
+            android:drawablePadding="8dp"/>
+        <Button
+            android:id="@+id/sharePinterestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_share_pinterest"
+            android:padding="10dp"
+            android:text="Share with Pinterest"
+            android:textColor="@color/black"
+            android:drawablePadding="8dp"/>
     </LinearLayout>
 </ScrollView>
