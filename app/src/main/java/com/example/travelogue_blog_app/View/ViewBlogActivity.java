@@ -88,46 +88,30 @@ public class ViewBlogActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this blog!");
         shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
-        Uri imageUri = null; // Declare imageUri here
+        Uri imageUri = null;
 
-        // Check if blogImage has a valid file path and create a URI using FileProvider
-        if (blogImage != null) {
-            File imageFile = new File(blogImage);
-            if (!imageFile.exists()) {
-                Log.e("ViewBlogActivity", "Image file does not exist: " + blogImage);
-                Toast.makeText(this, "Image file does not exist", Toast.LENGTH_SHORT).show();
-                return; // Exit if the file doesn't exist
-            }
-            imageUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", imageFile);
-
-            // Log the URI to help with debugging
-            Log.d("ViewBlogActivity", "Image URI: " + imageUri);
-
-            // Attach the URI to the intent
+        // use the content URI directly if it's in the content:// format
+        if (blogImage != null && blogImage.startsWith("content://")) {
+            imageUri = Uri.parse(blogImage);
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
         } else {
-            Toast.makeText(this, "No image to share", Toast.LENGTH_SHORT).show();
-            return; // Exit if there's no image
+            Toast.makeText(this, "Invalid image URI", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // Use Intent.createChooser to show the chooser dialog
+        // show chooser dialog
         Intent chooser = Intent.createChooser(shareIntent, "Share Blog");
 
-        // Grant URI permissions to the receiving applications, check if imageUri is not null
-        if (imageUri != null) {
-            List<ResolveInfo> resInfoList = this.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
-            for (ResolveInfo resolveInfo : resInfoList) {
-                String packageName = resolveInfo.activityInfo.packageName;
-                this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
+        // grant read permission to all apps receiving the intent
+        List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
 
         // Start the share intent
         startActivity(chooser);
     }
-
-
-
 
     private void displayBlogDetails() {
         // get records
