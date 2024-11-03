@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_marginHorizontal="20dp"
     android:layout_marginVertical="10dp"
-    tools:context=".AddUpdateBlogActivity">
+    tools:context=".View.AddUpdateBlogActivity">
 
     <TextView
         android:id="@+id/titleLabel"

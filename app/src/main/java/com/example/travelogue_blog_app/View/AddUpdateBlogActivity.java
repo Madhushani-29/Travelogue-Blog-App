@@ -126,9 +126,39 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         createBlogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+                if (validateInputs()) {
+                    saveData();
+                }
             }
         });
+    }
+
+    private boolean validateInputs() {
+        String title = titleInputField.getText().toString().trim();
+        String content = contentInputField.getText().toString().trim();
+        String location = locationInputField.getText().toString().trim();
+
+        if (title.isEmpty()) {
+            titleInputField.setError(getString(R.string.error_title_required));
+            return false;
+        }
+
+        if (content.isEmpty()) {
+            contentInputField.setError(getString(R.string.error_content_required));
+            return false;
+        }
+
+        if (location.isEmpty()) {
+            locationInputField.setError(getString(R.string.error_location_required));
+            return false;
+        }
+
+        if (imageUri == null) {
+            Toast.makeText(this, "Image is required", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void saveData() {

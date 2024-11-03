@@ -10,4 +10,7 @@
     <string name="location_hint">Enter Travel Destination</string>
     <string name="addBlogTitle">Add Blog</string>
     <string name="share_blog">Share Blog</string>
+    <string name="error_title_required">Title is required</string>
+    <string name="error_content_required">Content is required</string>
+    <string name="error_location_required">Location is required</string>
 </resources>
