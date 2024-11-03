@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,20 +15,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.example.travelogue_blog_app.Database.Constants;
 import com.example.travelogue_blog_app.R;
 
-import java.io.File;
 import java.util.List;
 
 public class ViewBlogActivity extends AppCompatActivity {
     // views
     private ImageView image;
     private TextView title, content, location;
-    private Button shareEmailButton;
+    private Button shareEmailButton, shareFacebookButton, sharePinterestButton;
 
     // action bar
     private ActionBar actionBar;
@@ -64,6 +61,8 @@ public class ViewBlogActivity extends AppCompatActivity {
         content=findViewById(R.id.contentText);
         location=findViewById(R.id.locationText);
         shareEmailButton = findViewById(R.id.shareEmailButton);
+        shareFacebookButton = findViewById(R.id.shareFacebookButton);
+        sharePinterestButton = findViewById(R.id.sharePinterestButton);
 
         displayBlogDetails();
 
@@ -73,18 +72,24 @@ public class ViewBlogActivity extends AppCompatActivity {
                 shareBlogViaEmail();
             }
         });
+
+        shareFacebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareBlogViaFacebook();
+            }
+        });
     }
 
     private void shareBlogViaEmail() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        shareIntent.setType("image/*");
+        Intent shareIntent = new Intent(Intent.ACTION_SENDTO);
+        shareIntent.setData(Uri.parse("mailto:"));
 
         String emailBody = "Title: " + title.getText().toString() + "\n" +
                 "Location: " + location.getText().toString() + "\n" +
                 "Content:\n" + content.getText().toString();
 
-        // Set subject and body text
+        // set subject and body text
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this blog!");
         shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
@@ -94,13 +99,14 @@ public class ViewBlogActivity extends AppCompatActivity {
         if (blogImage != null && blogImage.startsWith("content://")) {
             imageUri = Uri.parse(blogImage);
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read URI permission for the image
         } else {
             Toast.makeText(this, "Invalid image URI", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // show chooser dialog
-        Intent chooser = Intent.createChooser(shareIntent, "Share Blog");
+        // show chooser dialog restricted to email clients
+        Intent chooser = Intent.createChooser(shareIntent, "Share Blog via Email");
 
         // grant read permission to all apps receiving the intent
         List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
@@ -111,6 +117,41 @@ public class ViewBlogActivity extends AppCompatActivity {
 
         // Start the share intent
         startActivity(chooser);
+    }
+
+    private void shareBlogViaFacebook() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+
+        String emailBody = "Title: " + title.getText().toString() + "\n" +
+                "Location: " + location.getText().toString() + "\n" +
+                "Content:\n" + content.getText().toString();
+
+        // set the subject and body text
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this blog!");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
+
+        Uri imageUri = null;
+
+        // use the content URI directly if it's in the content:// format
+        if (blogImage != null && blogImage.startsWith("content://")) {
+            imageUri = Uri.parse(blogImage);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            // read URI permission for the image
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            Toast.makeText(this, "Invalid image URI", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // set the package to limit the chooser to Facebook
+        shareIntent.setPackage("com.facebook.katana"); // Facebook app package name
+
+        try {
+            startActivity(shareIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "Facebook app is not installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void displayBlogDetails() {

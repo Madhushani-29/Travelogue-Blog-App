@@ -47,4 +47,5 @@ dependencies {
     implementation(libs.material)
     implementation(libs.recyclerview)
     implementation(libs.circularimageview)
+    implementation("com.facebook.android:facebook-android-sdk:17.0.1")
 }

@@ -70,15 +70,5 @@
             android:text="Post on Facebook"
             android:textColor="@color/black"
             android:drawablePadding="8dp"/>
-        <Button
-            android:id="@+id/sharePinterestButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_share_pinterest"
-            android:padding="10dp"
-            android:text="Share with Pinterest"
-            android:textColor="@color/black"
-            android:drawablePadding="8dp"/>
     </LinearLayout>
 </ScrollView>

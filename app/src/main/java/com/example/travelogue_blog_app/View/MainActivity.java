@@ -21,6 +21,9 @@ import com.example.travelogue_blog_app.R;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 public class MainActivity extends AppCompatActivity {
 
     // ui components
