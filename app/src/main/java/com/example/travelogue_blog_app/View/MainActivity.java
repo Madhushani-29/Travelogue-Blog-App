@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "No blogs available to delete", Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.action_delete_selected) {
+            // delete multiple blogs once
             if (!selectedIds.isEmpty()) {
                 new AlertDialog.Builder(this)
                         .setTitle("Delete Blogs")
