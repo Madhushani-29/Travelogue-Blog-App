@@ -26,7 +26,7 @@ public class ViewBlogActivity extends AppCompatActivity {
     // views
     private ImageView image;
     private TextView title, content, location;
-    private Button shareEmailButton, shareFacebookButton, sharePinterestButton;
+    private Button shareEmailButton, shareFacebookButton;
 
     // action bar
     private ActionBar actionBar;
@@ -62,7 +62,6 @@ public class ViewBlogActivity extends AppCompatActivity {
         location=findViewById(R.id.locationText);
         shareEmailButton = findViewById(R.id.shareEmailButton);
         shareFacebookButton = findViewById(R.id.shareFacebookButton);
-        sharePinterestButton = findViewById(R.id.sharePinterestButton);
 
         displayBlogDetails();
 

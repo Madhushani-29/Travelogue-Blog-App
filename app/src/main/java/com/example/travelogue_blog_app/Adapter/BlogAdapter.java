@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,12 +28,14 @@ import java.util.ArrayList;
 public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
     private Context context;
     private ArrayList<BlogModel> blogList;
+    ArrayList<String> selectedIds;
 
     BlogDBHelper dbHelper;
 
-    public BlogAdapter(Context context, ArrayList<BlogModel> blogList) {
+    public BlogAdapter(Context context, ArrayList<BlogModel> blogList, ArrayList<String> selectedIds) {
         this.blogList = blogList;
         this.context = context;
+        this.selectedIds = selectedIds;
 
         dbHelper=new BlogDBHelper(context);
     }
@@ -82,6 +85,15 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
                         ""+location,
                         ""+image
                 );
+            }
+        });
+
+        //
+        holder.selectCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                selectedIds.add(model.getId()); // Add ID to selected list
+            } else {
+                selectedIds.remove(model.getId()); // Remove ID from selected list
             }
         });
     }
@@ -134,6 +146,8 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
         private ImageView image;
         private TextView title, content, location;
         private ImageButton moreButton;
+        // checkbox for multiple delete selection
+        private CheckBox selectCheckbox;
 
         public BlogHolder(@NonNull View itemView) {
             super(itemView);
@@ -144,6 +158,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
             content=itemView.findViewById(R.id.contentText);
             location=itemView.findViewById(R.id.locationText);
             moreButton=itemView.findViewById(R.id.moreButton);
+            selectCheckbox = itemView.findViewById(R.id.select_checkbox);
         }
     }
 }

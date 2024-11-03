@@ -3,9 +3,11 @@ package com.example.travelogue_blog_app.View;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -23,6 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     String orderByLocationAsc=Constants.C_LOCATION + " ASC";
     String orderByLocationDesc=Constants.C_LOCATION + " DESC";
     String orderByID=Constants.C_ID + " ASC";
+
+    // selected ID list to delete
+    private ArrayList<String> selectedIds = new ArrayList<>();
 
     // for refreshing use the last selected sorting
     String currentOrderByStatus=orderByID;
@@ -79,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void retrieveBlogs(String orderBy) {
         currentOrderByStatus=orderBy;
-        BlogAdapter blogAdapter=new BlogAdapter(MainActivity.this,
-                dbHelper.getAllBlogs(orderBy));
+        BlogAdapter blogAdapter = new BlogAdapter(MainActivity.this, dbHelper.getAllBlogs(orderBy), selectedIds);
         blogCard.setAdapter(blogAdapter);
 
         // set title as no of blogs created
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void searchBlogs(String query) {
         BlogAdapter blogAdapter=new BlogAdapter(MainActivity.this,
-                dbHelper.searchBlogs(query));
+                dbHelper.searchBlogs(query), selectedIds);
         blogCard.setAdapter(blogAdapter);
     }
 
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Log.d("", "onOptionsItemSelected:" +selectedIds);
         // handle menu items
         int id=item.getItemId();
         if (id==R.id.action_sort){
@@ -133,7 +140,23 @@ public class MainActivity extends AppCompatActivity {
         } else if (id==R.id.action_delete_all) {
             dbHelper.deleteAllBlogs();
             onResume();
+        } else if (id == R.id.action_delete_selected) {
+            if (!selectedIds.isEmpty()) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete Blogs")
+                        .setMessage("Are you sure you want to delete selected blogs?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            dbHelper.deleteMultipleBlogsByIds(selectedIds);
+                            retrieveBlogs(currentOrderByStatus); // Refresh the blog list
+                            selectedIds.clear(); // Clear selection after deletion
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else {
+                Toast.makeText(this, "No blogs selected", Toast.LENGTH_SHORT).show();
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 

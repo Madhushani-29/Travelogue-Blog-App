@@ -166,4 +166,13 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + Constants.TABLE_NAME);
         db.close();
     }
+
+    // delete multiple blogs once
+    public void deleteMultipleBlogsByIds(ArrayList<String> ids) {
+        SQLiteDatabase db = getWritableDatabase();
+        for (String id : ids) {
+            db.delete(Constants.TABLE_NAME, Constants.C_ID + " =?", new String[]{id});
+        }
+        db.close();
+    }
 }
