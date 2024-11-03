@@ -131,15 +131,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Log.d("", "onOptionsItemSelected:" +selectedIds);
         // handle menu items
         int id=item.getItemId();
         if (id==R.id.action_sort){
             // show sort options
             sortOptionDialog();
         } else if (id==R.id.action_delete_all) {
-            dbHelper.deleteAllBlogs();
-            onResume();
+            // check if there are any blogs to delete
+            if (dbHelper.getBlogCount() > 0) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete All Blogs")
+                        .setMessage("Are you sure you want to delete all blogs?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            dbHelper.deleteAllBlogs();
+                            onResume();
+                            Toast.makeText(this, "All blogs deleted", Toast.LENGTH_SHORT).show(); // Optional: Show a toast message
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else {
+                // show a message there are no blogs
+                Toast.makeText(this, "No blogs available to delete", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.action_delete_selected) {
             if (!selectedIds.isEmpty()) {
                 new AlertDialog.Builder(this)

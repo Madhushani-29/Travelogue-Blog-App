@@ -15,7 +15,7 @@
             android:id="@+id/imageContainer"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="@color/ash_600">
+            android:background="@color/teal_100">
             <ImageView
                 android:id="@+id/blogImage"
                 android:layout_width="match_parent"
@@ -23,25 +23,31 @@
                 android:src="@drawable/ic_image"
                 android:scaleType="centerInside"/>
         </FrameLayout>
+
         <TextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:textColor="@color/black"
+            android:fontFamily="monospace"
+            android:paddingTop="10dp"
             android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:paddingTop="10dp"/>
+            android:paddingLeft="10dp"/>
+
         <TextView
             android:id="@+id/locationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:text="Location"
             android:drawableStart="@drawable/ic_location"
             android:drawablePadding="4dp"
-            android:paddingTop="10dp"/>
+            android:fontFamily="casual"
+            android:paddingTop="10dp"
+            android:text="Location"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:paddingLeft="10dp"/>
         <TextView
             android:id="@+id/contentText"
             android:layout_width="match_parent"
@@ -49,7 +55,8 @@
             android:textSize="20sp"
             android:textColor="@color/black"
             android:text="Content"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"/>
         <Button
             android:id="@+id/shareEmailButton"
             android:layout_width="wrap_content"
