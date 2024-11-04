@@ -51,4 +51,6 @@
     <string name="share_via_email">Share Blog via Email</string>
     <string name="invalid_image_uri">Invalid image URI</string>
     <string name="facebook_app_not_installed">Facebook app is not installed.</string>
+    <string name="share_email_button_text">Share via Email</string>
+    <string name="share_facebook_button_text">Post on Facebook</string>
 </resources>

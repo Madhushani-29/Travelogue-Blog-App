@@ -64,9 +64,10 @@
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_share_email"
             android:padding="10dp"
-            android:text="Share via Email"
+            android:text="@string/share_email_button_text"
             android:textColor="@color/black"
             android:drawablePadding="8dp"/>
+
         <Button
             android:id="@+id/shareFacebookButton"
             android:layout_width="wrap_content"
@@ -74,7 +75,7 @@
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_share_facebook"
             android:padding="10dp"
-            android:text="Post on Facebook"
+            android:text="@string/share_facebook_button_text"
             android:textColor="@color/black"
             android:drawablePadding="8dp"/>
     </LinearLayout>
