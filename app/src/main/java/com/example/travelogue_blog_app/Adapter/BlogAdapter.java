@@ -87,19 +87,21 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
             }
         });
 
-        //
+        // when click on the checkbox
         holder.selectCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                selectedIds.add(model.getId()); // Add ID to selected list
+                // add id to selected list
+                selectedIds.add(model.getId());
             } else {
-                selectedIds.remove(model.getId()); // Remove ID from selected list
+                // if not remove id
+                selectedIds.remove(model.getId());
             }
         });
     }
 
     private void showMoreDialog(final String id, final String title, final String content, final String location, final String image) {
         // options to display in the menu
-        String [] options= {"Update", "Delete"};
+        String [] options= {context.getString(R.string.update_option), context.getString(R.string.delete_option)};
 
         // dialog
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
@@ -109,7 +111,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
             public void onClick(DialogInterface dialog, int which) {
                 // handle item clicks
                 if (which==0){
-                    // when update click
+                    // when update onclick
                     // start AddUpdateBolgActivity to update the existing record
                     Intent intent = new Intent(context, AddUpdateBlogActivity.class);
                     intent.putExtra("id", id);
@@ -124,14 +126,14 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
                 else if (which==1) {
                     // when delete is clicked
                     new AlertDialog.Builder(context)
-                            .setTitle("Delete Blog")
-                            .setMessage("Are you sure you want to delete this blog?")
-                            .setPositiveButton("Yes", (dialogConfirm, whichConfirm) -> {
+                            .setTitle(R.string.delete_blog_alert_title)
+                            .setMessage(R.string.single_delete_confirm_text)
+                            .setPositiveButton(R.string.yes_button_text, (dialogConfirm, whichConfirm) -> {
                                 dbHelper.deleteBlogById(id);
                                 // Refresh blogs by calling onResume
                                 ((MainActivity) context).onResume();
                             })
-                            .setNegativeButton("No", (dialogConfirm, whichConfirm) -> dialog.dismiss())
+                            .setNegativeButton(R.string.no_button_text, (dialogConfirm, whichConfirm) -> dialog.dismiss())
                             .show();
                 }
             }

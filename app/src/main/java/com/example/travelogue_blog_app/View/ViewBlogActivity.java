@@ -43,23 +43,23 @@ public class ViewBlogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_blog);
 
-        actionBar=getSupportActionBar();
-        actionBar.setTitle("View Blog");
+        actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.view_blog_title);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get record id
-        Intent intent=getIntent();
-        blogId=intent.getStringExtra("BLOG_ID");
+        Intent intent = getIntent();
+        blogId = intent.getStringExtra("BLOG_ID");
 
         // init db helper
-        dbHelper=new BlogDBHelper(this);
+        dbHelper = new BlogDBHelper(this);
 
         // init views
-        image=findViewById(R.id.blogImage);
-        title=findViewById(R.id.titleText);
-        content=findViewById(R.id.contentText);
-        location=findViewById(R.id.locationText);
+        image = findViewById(R.id.blogImage);
+        title = findViewById(R.id.titleText);
+        content = findViewById(R.id.contentText);
+        location = findViewById(R.id.locationText);
         shareEmailButton = findViewById(R.id.shareEmailButton);
         shareFacebookButton = findViewById(R.id.shareFacebookButton);
 
@@ -84,12 +84,10 @@ public class ViewBlogActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SENDTO);
         shareIntent.setData(Uri.parse("mailto:"));
 
-        String emailBody = "Title: " + title.getText().toString() + "\n" +
-                "Location: " + location.getText().toString() + "\n" +
-                "Content:\n" + content.getText().toString();
+        String emailBody = getString(R.string.email_body, title.getText().toString(), location.getText().toString(), content.getText().toString());
 
         // set subject and body text
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this blog!");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
         Uri imageUri = null;
@@ -100,12 +98,12 @@ public class ViewBlogActivity extends AppCompatActivity {
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read URI permission for the image
         } else {
-            Toast.makeText(this, "Invalid image URI", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.invalid_image_uri, Toast.LENGTH_SHORT).show();
             return;
         }
 
         // show chooser dialog restricted to email clients
-        Intent chooser = Intent.createChooser(shareIntent, "Share Blog via Email");
+        Intent chooser = Intent.createChooser(shareIntent, getString(R.string.share_via_email));
 
         // grant read permission to all apps receiving the intent
         List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
@@ -122,12 +120,10 @@ public class ViewBlogActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
 
-        String emailBody = "Title: " + title.getText().toString() + "\n" +
-                "Location: " + location.getText().toString() + "\n" +
-                "Content:\n" + content.getText().toString();
+        String emailBody = getString(R.string.email_body, title.getText().toString(), location.getText().toString(), content.getText().toString());
 
         // set the subject and body text
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this blog!");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
         Uri imageUri = null;
@@ -139,7 +135,7 @@ public class ViewBlogActivity extends AppCompatActivity {
             // read URI permission for the image
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
-            Toast.makeText(this, "Invalid image URI", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.invalid_image_uri, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -149,31 +145,31 @@ public class ViewBlogActivity extends AppCompatActivity {
         try {
             startActivity(shareIntent);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Facebook app is not installed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.facebook_app_not_installed, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void displayBlogDetails() {
         // get records
         // based on this query get data with id
-        String selectQuery="SELECT * FROM "
+        String selectQuery = "SELECT * FROM "
                 + Constants.TABLE_NAME
                 + " WHERE "
                 + Constants.C_ID
                 + " =\""
                 + blogId
                 + "\"";
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        Cursor cursor=db.rawQuery(selectQuery, null);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 // Safely retrieve the column values
-                String blogId = ""+cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID));
-                String blogTitle = ""+cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_TITLE));
-                String blogContent = ""+cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
-                String blogLocation = ""+cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
-                blogImage = ""+cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+                String blogId = "" + cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID));
+                String blogTitle = "" + cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_TITLE));
+                String blogContent = "" + cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
+                String blogLocation = "" + cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
+                blogImage = "" + cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
 
                 // set data
                 title.setText(blogTitle);

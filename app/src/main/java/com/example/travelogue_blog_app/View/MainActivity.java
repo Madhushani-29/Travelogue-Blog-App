@@ -41,32 +41,32 @@ public class MainActivity extends AppCompatActivity {
     ActionBar actionBar;
 
     // sort options
-    String orderByTitleAsc=Constants.C_TITLE + " ASC";
-    String orderByTitleDesc=Constants.C_TITLE + " DESC";
-    String orderByLocationAsc=Constants.C_LOCATION + " ASC";
-    String orderByLocationDesc=Constants.C_LOCATION + " DESC";
-    String orderByID=Constants.C_ID + " ASC";
+    String orderByTitleAsc = Constants.C_TITLE + " ASC";
+    String orderByTitleDesc = Constants.C_TITLE + " DESC";
+    String orderByLocationAsc = Constants.C_LOCATION + " ASC";
+    String orderByLocationDesc = Constants.C_LOCATION + " DESC";
+    String orderByID = Constants.C_ID + " ASC";
 
     // selected ID list to delete
     private ArrayList<String> selectedIds = new ArrayList<>();
 
     // for refreshing use the last selected sorting
-    String currentOrderByStatus=orderByID;
+    String currentOrderByStatus = orderByID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        actionBar=getSupportActionBar();
-        actionBar.setTitle("All Blogs");
+        actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.all_blogs_title));
 
         //initialize views
-        navigateAddBlogsBtn=findViewById(R.id.addBlogButton);
-        blogCard=findViewById(R.id.blogCard);
-        
+        navigateAddBlogsBtn = findViewById(R.id.addBlogButton);
+        blogCard = findViewById(R.id.blogCard);
+
         // init db helper
-        dbHelper=new BlogDBHelper(this);
+        dbHelper = new BlogDBHelper(this);
 
         // by default sort by id
         retrieveBlogs(orderByID);
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // click to start add record activity
-                Intent intent=new Intent(MainActivity.this, AddUpdateBlogActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddUpdateBlogActivity.class);
                 // not a update
                 intent.putExtra("isEditMode", false);
                 startActivity(intent);
@@ -85,41 +85,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrieveBlogs(String orderBy) {
-        currentOrderByStatus=orderBy;
+        currentOrderByStatus = orderBy;
         BlogAdapter blogAdapter = new BlogAdapter(MainActivity.this, dbHelper.getAllBlogs(orderBy), selectedIds);
         blogCard.setAdapter(blogAdapter);
 
         // set title as no of blogs created
-        actionBar.setTitle("Total: " + dbHelper.getBlogCount());
+        actionBar.setTitle(getString(R.string.total_text) + dbHelper.getBlogCount());
     }
 
     private void searchBlogs(String query) {
-        BlogAdapter blogAdapter=new BlogAdapter(MainActivity.this,
+        BlogAdapter blogAdapter = new BlogAdapter(MainActivity.this,
                 dbHelper.searchBlogs(query), selectedIds);
         blogCard.setAdapter(blogAdapter);
     }
 
     private void sortOptionDialog() {
         // options to display
-        String [] options={
-                "Title Ascending",
-                "Title Descending",
-                "Location Ascending",
-                "Location Descending"
+        String[] options = {
+                getString(R.string.sort_title_asc_text),
+                getString(R.string.sort_title_des_text),
+                getString(R.string.sort_location_asc_text),
+                getString(R.string.sort_location_des_text)
         };
         // dialog
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle("Sort By").setItems(options, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.sort_by_text)).setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // handle options click
-                if (which==0){
+                if (which == 0) {
                     retrieveBlogs(orderByTitleAsc);
-                } else if (which==1) {
+                } else if (which == 1) {
                     retrieveBlogs(orderByTitleDesc);
-                } else if (which==2) {
+                } else if (which == 2) {
                     retrieveBlogs(orderByLocationAsc);
-                } else if (which==3) {
+                } else if (which == 3) {
                     retrieveBlogs(orderByLocationDesc);
                 }
             }
@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item= menu.findItem(R.id.action_search);
-        SearchView searchView=(SearchView) item.getActionView();
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -159,42 +159,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // handle menu items
-        int id=item.getItemId();
-        if (id==R.id.action_sort){
+        int id = item.getItemId();
+        if (id == R.id.action_sort) {
             // show sort options
             sortOptionDialog();
-        } else if (id==R.id.action_delete_all) {
+        } else if (id == R.id.action_delete_all) {
             // check if there are any blogs to delete
             if (dbHelper.getBlogCount() > 0) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Delete All Blogs")
-                        .setMessage("Are you sure you want to delete all blogs?")
+                        .setTitle(getString(R.string.delete_all_blog_alert_title))
+                        .setMessage(getString(R.string.delete_all_confirm_text))
                         .setPositiveButton("Yes", (dialog, which) -> {
                             dbHelper.deleteAllBlogs();
                             onResume();
-                            Toast.makeText(this, "All blogs deleted", Toast.LENGTH_SHORT).show(); // Optional: Show a toast message
+                            Toast.makeText(this, getString(R.string.delete_all_success_toast), Toast.LENGTH_SHORT).show(); // Optional: Show a toast message
                         })
                         .setNegativeButton("No", null)
                         .show();
             } else {
                 // show a message there are no blogs
-                Toast.makeText(this, "No blogs available to delete", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_blogs_available_toast_text), Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.action_delete_selected) {
             // delete multiple blogs once
             if (!selectedIds.isEmpty()) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Delete Blogs")
-                        .setMessage("Are you sure you want to delete selected blogs?")
+                        .setTitle(getString(R.string.delete_multiple_blog_alert_title))
+                        .setMessage(getString(R.string.delete_multiple_confirm_text))
                         .setPositiveButton("Yes", (dialog, which) -> {
                             dbHelper.deleteMultipleBlogsByIds(selectedIds);
                             retrieveBlogs(currentOrderByStatus); // Refresh the blog list
                             selectedIds.clear(); // Clear selection after deletion
+                            Toast.makeText(this, getString(R.string.delete_multiple_success_toast), Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("No", null)
                         .show();
             } else {
-                Toast.makeText(this, "No blogs selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_blogs_selected_toast_text), Toast.LENGTH_SHORT).show();
             }
         }
 

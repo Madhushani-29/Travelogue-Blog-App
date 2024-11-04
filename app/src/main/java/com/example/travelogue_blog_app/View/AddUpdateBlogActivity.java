@@ -67,7 +67,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         actionBar=getSupportActionBar();
 
         // add title
-        actionBar.setTitle("Add Blog");
+        actionBar.setTitle(R.string.addBlogTitle);
         // add back button
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -84,7 +84,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         isUpdateMode = intent.getBooleanExtra("isEditMode", false);
 
         if (isUpdateMode){
-            actionBar.setTitle("Update Blog");
+            actionBar.setTitle(R.string.update_blog_title_text);
 
             id = intent.getStringExtra("id");
             title = intent.getStringExtra("title");
@@ -104,7 +104,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
             }
         }
         else {
-            actionBar.setTitle("Add New Blog");
+            actionBar.setTitle(R.string.addBlogTitle);
         }
 
         // init db helper
@@ -154,7 +154,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
         }
 
         if (imageUri == null) {
-            Toast.makeText(this, "Image is required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.image_required_toast_text, Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -175,7 +175,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                     ""+location,
                     ""+imageUri
             );
-            Toast.makeText(this, "Blog updated successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.update_success_toast_text , Toast.LENGTH_SHORT).show();
         }
         else {
             // save to db
@@ -185,7 +185,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                     ""+location,
                     ""+imageUri
             );
-            Toast.makeText(this, "Blog created successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.create_success_toast_text, Toast.LENGTH_SHORT).show();
         }
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -200,10 +200,11 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
     // display image picker dialog
     private void imagePickDialog(){
         // options to display in dialog
-        String[] options={"Camera", "Gallery"};
+        String[] options = {getString(R.string.camera), getString(R.string.gallery)};
+
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         // title
-        builder.setTitle("Pick Image From");
+        builder.setTitle(R.string.pick_image_from_text);
         // set items
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
@@ -301,7 +302,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                         pickFromCamera();
                     }
                     else {
-                        Toast.makeText(this, "Camera & Storage permissions are required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.camera_storage_permission_required_toast_text, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -314,7 +315,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                         pickFromGallery();
                     }
                     else {
-                        Toast.makeText(this, "Storage permission is required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.storage_permission_required_toast_text, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -333,13 +334,13 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                     // set image
                     imageView.setImageURI(selectedImageUri);
                 } else {
-                    Toast.makeText(this, "Failed to select image!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.image_selection_failed_toast_text, Toast.LENGTH_SHORT).show();
                 }
             } else if (requestCode==IMAGE_PICK_CAMERA_CODE) {
                 if (imageUri != null){
                     imageView.setImageURI(imageUri);
                 } else {
-                    Toast.makeText(this, "Failed to capture image!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.image_capture_failed_toast_text, Toast.LENGTH_SHORT).show();
                 }
             }
         }
