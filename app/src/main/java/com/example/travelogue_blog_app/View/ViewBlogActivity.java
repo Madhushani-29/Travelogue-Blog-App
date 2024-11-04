@@ -177,8 +177,8 @@ public class ViewBlogActivity extends AppCompatActivity {
 
                 // set data
                 title.setText(blogTitle);
-                content.setText(blogTitle);
-                location.setText(blogTitle);
+                content.setText(blogContent);
+                location.setText(blogLocation);
                 image.setImageURI(Uri.parse(blogImage));
             } while (cursor.moveToNext());
         }

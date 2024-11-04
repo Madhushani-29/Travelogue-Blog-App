@@ -60,7 +60,6 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
 
         // set data to view
         holder.title.setText(title);
-        holder.content.setText(content);
         holder.location.setText(location);
         holder.image.setImageURI(Uri.parse(image));
 
@@ -144,7 +143,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
     class BlogHolder extends RecyclerView.ViewHolder{
         // views
         private ImageView image;
-        private TextView title, content, location;
+        private TextView title, location;
         private ImageButton moreButton;
         // checkbox for multiple delete selection
         private CheckBox selectCheckbox;
@@ -155,7 +154,6 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
             // init views
             image=itemView.findViewById(R.id.blogImage);
             title=itemView.findViewById(R.id.titleText);
-            content=itemView.findViewById(R.id.contentText);
             location=itemView.findViewById(R.id.locationText);
             moreButton=itemView.findViewById(R.id.moreButton);
             selectCheckbox = itemView.findViewById(R.id.select_checkbox);
