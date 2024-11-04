@@ -122,10 +122,17 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
                     context.startActivity(intent);
                 }
                 else if (which==1) {
-                    // when delete click
-                    dbHelper.deleteBlogById(id);
-                    // refresh blogs by calling onResume
-                    ((MainActivity) context) .onResume();
+                    // when delete is clicked
+                    new AlertDialog.Builder(context)
+                            .setTitle("Delete Blog")
+                            .setMessage("Are you sure you want to delete this blog?")
+                            .setPositiveButton("Yes", (dialogConfirm, whichConfirm) -> {
+                                dbHelper.deleteBlogById(id);
+                                // Refresh blogs by calling onResume
+                                ((MainActivity) context).onResume();
+                            })
+                            .setNegativeButton("No", (dialogConfirm, whichConfirm) -> dialog.dismiss())
+                            .show();
                 }
             }
         });

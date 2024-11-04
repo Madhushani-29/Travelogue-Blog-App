@@ -99,6 +99,33 @@ public class MainActivity extends AppCompatActivity {
         blogCard.setAdapter(blogAdapter);
     }
 
+    private void sortOptionDialog() {
+        // options to display
+        String [] options={
+                "Title Ascending",
+                "Title Descending",
+                "Location Ascending",
+                "Location Descending"
+        };
+        // dialog
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("Sort By").setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // handle options click
+                if (which==0){
+                    retrieveBlogs(orderByTitleAsc);
+                } else if (which==1) {
+                    retrieveBlogs(orderByTitleDesc);
+                } else if (which==2) {
+                    retrieveBlogs(orderByLocationAsc);
+                } else if (which==3) {
+                    retrieveBlogs(orderByLocationDesc);
+                }
+            }
+        }).create().show(); // display dialog
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -172,32 +199,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void sortOptionDialog() {
-        // options to display
-        String [] options={
-                "Title Ascending",
-                "Title Descending",
-                "Location Ascending",
-                "Location Descending"
-        };
-        // dialog
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle("Sort By").setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // handle options click
-                if (which==0){
-                    retrieveBlogs(orderByTitleAsc);
-                } else if (which==1) {
-                    retrieveBlogs(orderByTitleDesc);
-                } else if (which==2) {
-                    retrieveBlogs(orderByLocationAsc);
-                } else if (which==3) {
-                    retrieveBlogs(orderByLocationDesc);
-                }
-            }
-        }).create().show(); // display dialog
     }
 }
