@@ -7,4 +7,5 @@
     <color name="teal_300">#5DC1B9</color>
     <color name="ash">#B2BEB5</color>
     <color name="ash_600">#5D5D5D</color>
+    <color name="transparent_500">#50FFFFFF</color>
 </resources>

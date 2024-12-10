@@ -2,12 +2,12 @@
   "project_info": {
     "project_number": "93691761220",
     "project_id": "travelogue-blog-app",
-    "storage_bucket": "travelogue-blog-app.appspot.com"
+    "storage_bucket": "travelogue-blog-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:93691761220:android:6cd95b33ed62e1b0c5e211",
+        "mobilesdk_app_id": "1:93691761220:android:574a59c13850011bc5e211",
         "android_client_info": {
           "package_name": "com.example.travelogue_blog_app"
         }

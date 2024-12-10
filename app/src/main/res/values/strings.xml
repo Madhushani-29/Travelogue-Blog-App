@@ -53,4 +53,17 @@
     <string name="facebook_app_not_installed">Facebook app is not installed.</string>
     <string name="share_email_button_text">Share via Email</string>
     <string name="share_facebook_button_text">Post on Facebook</string>
+    <string name="sign_up_label">Sign Up</string>
+    <string name="sign_in_label">Log In</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="already_user_text">Already an user? Login</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_invalid_email">Enter a valid email address</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="sign_up_successful">Sign-Up successful</string>
+    <string name="login_successful">Login successful</string>
+    <string name="new_user_text">Don\'t have an account, Signup</string>
+
 </resources>
