@@ -43,6 +43,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation("com.google.firebase:firebase-database:21.0.0")
     // google material, recyclerview, image cropper and circular image dependency add
     implementation(libs.material)
     implementation(libs.recyclerview)

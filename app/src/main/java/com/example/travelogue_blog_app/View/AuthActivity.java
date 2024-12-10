@@ -11,23 +11,30 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelogue_blog_app.Database.FirebaseAuthHelper;
 import com.example.travelogue_blog_app.R;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AuthActivity extends AppCompatActivity {
+    private EditText emailEditText, passwordEditText;
+    private FirebaseAuthHelper firebaseAuthHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        // Fetch references
+        // ui elements
         TextView titleTextView = findViewById(R.id.titleTextView);
-        EditText emailEditText = findViewById(R.id.emailEditText);
-        EditText passwordEditText = findViewById(R.id.passwordEditText);
+        emailEditText = findViewById(R.id.emailEditText);  // Corrected variable name (was redeclared in method)
+        passwordEditText = findViewById(R.id.passwordEditText);  // Corrected variable name
         Button actionButton = findViewById(R.id.actionButton);
         TextView redirectTextView = findViewById(R.id.redirectTextView);
 
-        // Determine the activity type
+        // initialize firebaseAuthHelper
+        firebaseAuthHelper = new FirebaseAuthHelper();  // Initialize here
+
+        // login or signup boolean
         boolean isSignUp = getIntent().getBooleanExtra("isSignUp", true);
 
         if (isSignUp) {
@@ -52,12 +59,13 @@ public class AuthActivity extends AppCompatActivity {
 
         actionButton.setOnClickListener(v -> {
             if (validateInputs(emailEditText, passwordEditText)) {
+                String email = emailEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
+
                 if (isSignUp) {
-                    Toast.makeText(this, "Sign-Up successful", Toast.LENGTH_SHORT).show();
-                    // Proceed with Sign-Up logic
+                    onSignupClick(email, password);
                 } else {
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                    // Proceed with Login logic
+                    onLoginClick(email, password);
                 }
             }
         });
@@ -88,5 +96,43 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void onLoginClick(String email, String password) {
+        firebaseAuthHelper.signInUser(email, password, new FirebaseAuthHelper.AuthListener() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                // redirect to the home screen after successful login and show a toast
+                Toast.makeText(AuthActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                navigateToHome();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(AuthActivity.this, "Login failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void onSignupClick(String email, String password) {
+        firebaseAuthHelper.signUpUser(email, password, new FirebaseAuthHelper.AuthListener() {
+            @Override
+            public void onSuccess(FirebaseUser user) {
+                // redirect to home and display a toast
+                Toast.makeText(AuthActivity.this, "Sign up successful!", Toast.LENGTH_SHORT).show();
+                navigateToHome();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(AuthActivity.this, "Sign up failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
