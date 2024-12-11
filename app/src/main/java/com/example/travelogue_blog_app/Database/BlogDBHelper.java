@@ -48,6 +48,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         values.put(Constants.C_LOCATION, location);
         values.put(Constants.C_IMAGE, image);
         values.put(Constants.C_CREATOR, creator);
+        values.put(Constants.C_IS_SYNCED, 0);
 
         long id = db.insert(Constants.TABLE_NAME, null, values);
 
@@ -77,6 +78,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         values.put(Constants.C_LOCATION, location);
         values.put(Constants.C_IMAGE, image);
         values.put(Constants.C_CREATOR, creator);
+        values.put(Constants.C_IS_SYNCED, 0);
 
         // update row
         // return record id of saved blog
@@ -210,7 +212,11 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
                 firestore.collection("blogs").document(id)
                         .set(blogPost)
-                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post saved successfully."))
+                        .addOnSuccessListener(
+                                aVoid ->{
+                                    updateSyncStatus(id);
+                                    Log.d("Firebase", "Blog post saved successfully.");
+                                })
                         .addOnFailureListener(e -> Log.e("Firebase", "Failed to save blog post: " + e.getMessage()));
             } catch (Exception e) {
             }
@@ -227,7 +233,10 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
                 firestore.collection("blogs").document(id)
                         .set(blogPost)  // Overwrites the existing data in Firebase
-                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post updated successfully."))
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Firebase", "Blog post updated successfully.");
+                            updateSyncStatus(id);
+                        })
                         .addOnFailureListener(e -> Log.e("Firebase", "Failed to update blog post: " + e.getMessage()));
             } catch (Exception e) {
                 Log.e("Firebase", "Error updating blog post in Firebase: " + e.getMessage());
@@ -274,5 +283,46 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         }).start();
     }
 
+    private void updateSyncStatus(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        // mark as synced
+        values.put(Constants.C_IS_SYNCED, 1);
+        db.update(Constants.TABLE_NAME, values, Constants.C_ID + " =?", new String[]{id});
+        db.close();
+    }
 
+    public void syncWithFirebase(Context context) {
+        if (NetworkUtils.isInternetAvailable(context)) {
+            ArrayList<BlogModel> unsyncedBlogs = getUnsyncedBlogs();
+            for (BlogModel blog : unsyncedBlogs) {
+                saveDataToFirebase(blog.getTitle(), blog.getContent(), blog.getLocation(),
+                        blog.getImage(), blog.getId(), blog.getCreator());
+            }
+        }
+    }
+
+    //  get a list of unsynced blogs
+    private ArrayList<BlogModel> getUnsyncedBlogs() {
+        ArrayList<BlogModel> blogList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + Constants.TABLE_NAME + " WHERE " + Constants.C_IS_SYNCED + " = 0";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_TITLE));
+                String content = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
+                String image = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+                String creator = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CREATOR));
+
+                BlogModel blogModel = new BlogModel(id, title, content, location, image, creator);
+                blogList.add(blogModel);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return blogList;
+    }
 }

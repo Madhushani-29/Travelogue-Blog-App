@@ -5,10 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.example.travelogue_blog_app.R;
 
 
 public class SplashActivity extends AppCompatActivity {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BlogDBHelper dbHelper = new BlogDBHelper(this);
+        dbHelper.syncWithFirebase(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
