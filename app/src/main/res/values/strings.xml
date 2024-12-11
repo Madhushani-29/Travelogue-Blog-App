@@ -68,4 +68,6 @@
     <string name="cloud_name">dbcadswtf</string>
     <string name="api_key">455125535466135</string>
     <string name="api_secret">eCzoSAGq0wTccFzfMhfq4dMW1vQ</string>
+    <string name="logout_alert_title">Confirm Logout</string>
+    <string name="logout_alert_content">Are you sure want to logout?</string>
 </resources>

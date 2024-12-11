@@ -21,6 +21,7 @@ import com.example.travelogue_blog_app.Database.Constants;
 import com.example.travelogue_blog_app.R;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -193,8 +194,30 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, getString(R.string.no_blogs_selected_toast_text), Toast.LENGTH_SHORT).show();
             }
+        } else if (id==R.id.action_logout) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.logout_alert_title))
+                    .setMessage(getString(R.string.logout_alert_content))
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        logoutUser();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logoutUser() {
+        dbHelper.clearBlogsToLogout(this);
+
+        // logout
+        FirebaseAuth.getInstance().signOut();
+
+        // redirect to the authentication page
+        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

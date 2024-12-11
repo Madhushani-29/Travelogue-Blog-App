@@ -7,10 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.example.travelogue_blog_app.Database.BlogDBHelper;
+import com.example.travelogue_blog_app.Database.FirebaseAuthHelper;
 import com.example.travelogue_blog_app.R;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class SplashActivity extends AppCompatActivity {
+    private FirebaseAuthHelper firebaseAuthHelper;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -23,13 +27,29 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashActivity.this , AuthActivity.class));
-                finish();
-            }
-        }, 6000);
+        firebaseAuthHelper = new FirebaseAuthHelper();
+
+        FirebaseUser currentUser = firebaseAuthHelper.getCurrentUser();
+
+        // check user is logged in or no
+        // if there are then navigate to main scrreen
+        if (currentUser != null) {
+            navigateToMainActivity();
+        } else {
+            // else display the splash screen
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SplashActivity.this, AuthActivity.class));
+                    finish();
+                }
+            }, 6000);
+        }
+    }
+
+    private void navigateToMainActivity() {
+        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        finish();
     }
 }

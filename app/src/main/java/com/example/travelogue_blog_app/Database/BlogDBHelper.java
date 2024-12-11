@@ -325,4 +325,11 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.close();
         return blogList;
     }
+
+    // clear full table to logout
+    public void clearBlogsToLogout(Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + Constants.TABLE_NAME); // Deletes all rows from the table
+        db.close();
+    }
 }
