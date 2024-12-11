@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.travelogue_blog_app.Utill.SyncCompleteListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -285,6 +286,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         }).start();
     }
 
+    // upodate the sync status that use to identify the synced status
     private void updateSyncStatus(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -294,6 +296,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // upload to fitebase when have connection
     public void syncWithFirebase(Context context) {
         if (NetworkUtils.isInternetAvailable(context)) {
             ArrayList<BlogModel> unsyncedBlogs = getUnsyncedBlogs();
@@ -304,10 +307,22 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // get firebase blogs to sqlite database
     public void syncToSqliteDB(Context context, SyncCompleteListener listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuthHelper firebaseAuthHelper = new FirebaseAuthHelper();
+        FirebaseUser currentUser = firebaseAuthHelper.getCurrentUser();
+
+        if (currentUser == null) {
+            Log.e("FirebaseSync", "No logged-in user found.");
+            listener.onSyncComplete(false);
+            return;
+        }
+
+        String currentUserId = currentUser.getUid();
 
         db.collection("blogs")
+                .whereEqualTo("creator", currentUserId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -318,10 +333,11 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                             String image = document.getString("image");
                             String id = document.getString("id");
                             String creator = document.getString("creator");
+
                             BlogModel blog = new BlogModel(id, title, content, location, image, creator);
                             saveBlogToSQLite(context, blog);
                         }
-                        // notify that sync is complete
+                        // Notify that sync is complete
                         listener.onSyncComplete(true);
                     } else {
                         Log.e("FirebaseSync", "Error fetching blogs from Firebase", task.getException());
@@ -330,6 +346,8 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                 });
     }
 
+
+    // save firebase blogs to sqlite database
     private void saveBlogToSQLite(Context context, BlogModel blog) {
         SQLiteDatabase db = this.getWritableDatabase();
 
