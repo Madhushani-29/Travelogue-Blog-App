@@ -24,6 +24,7 @@ import com.example.travelogue_blog_app.R;
 
 import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class AddUpdateBlogActivity extends AppCompatActivity {
     // ui components
@@ -162,6 +163,9 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
     }
 
     private void saveData() {
+        // get current user id
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // get data
         title=""+titleInputField.getText().toString().trim();
         content=""+contentInputField.getText().toString().trim();
@@ -174,6 +178,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                     ""+content,
                     ""+location,
                     ""+imageUri,
+                    ""+currentUserId,
                     this
             );
             Toast.makeText(this, R.string.update_success_toast_text , Toast.LENGTH_SHORT).show();
@@ -185,6 +190,7 @@ public class AddUpdateBlogActivity extends AppCompatActivity {
                     ""+content,
                     ""+location,
                     ""+imageUri,
+                    ""+currentUserId,
                     this
             );
             Toast.makeText(this, R.string.create_success_toast_text, Toast.LENGTH_SHORT).show();

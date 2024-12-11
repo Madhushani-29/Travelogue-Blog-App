@@ -5,21 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.util.Log;
 
-import com.example.travelogue_blog_app.Utill.CloudinaryHelper;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.travelogue_blog_app.Model.BlogModel;
 import com.example.travelogue_blog_app.Utill.NetworkUtils;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
@@ -45,7 +38,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // insert data into table
-    public long insertData(String title, String content, String location, String image, Context context) {
+    public long insertData(String title, String content, String location, String image, String creator, Context context) {
         // insert data into SQLite database
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -54,6 +47,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         values.put(Constants.C_CONTENT, content);
         values.put(Constants.C_LOCATION, location);
         values.put(Constants.C_IMAGE, image);
+        values.put(Constants.C_CREATOR, creator);
 
         long id = db.insert(Constants.TABLE_NAME, null, values);
 
@@ -63,13 +57,13 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         // check if internet is available
         if (NetworkUtils.isInternetAvailable(context)) {
             // Internet is available, save data to Firebase
-            saveDataToFirebase(title, content, location, image, String.valueOf(id));
+            saveDataToFirebase(title, content, location, image, String.valueOf(id), creator);
         }
         return id;
     }
 
     // update data
-    public void updateData(String id, String title, String content, String location, String image, Context context){
+    public void updateData(String id, String title, String content, String location, String image, String creator, Context context){
         // need to write data
         // then get a writable database
         SQLiteDatabase db=this.getWritableDatabase();
@@ -82,6 +76,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         values.put(Constants.C_CONTENT, content);
         values.put(Constants.C_LOCATION, location);
         values.put(Constants.C_IMAGE, image);
+        values.put(Constants.C_CREATOR, creator);
 
         // update row
         // return record id of saved blog
@@ -92,7 +87,7 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
         if (NetworkUtils.isInternetAvailable(context)) {
             // Internet is available, update data in Firebase as well
-            updateDataInFirebase(id, title, content, location, image);
+            updateDataInFirebase(id, title, content, location, image, creator);
         }
     }
 
@@ -114,9 +109,10 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                 String content = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
                 String location = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
                 String image = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+                String creator = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CREATOR));
 
                 // Create a new BlogModel and add it to the list
-                BlogModel blogModel = new BlogModel(id, title, content, location, image);
+                BlogModel blogModel = new BlogModel(id, title, content, location, image, creator);
                 blogList.add(blogModel);
             } while (cursor.moveToNext());
         }
@@ -146,9 +142,10 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                 String content = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CONTENT));
                 String location = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_LOCATION));
                 String image = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_IMAGE));
+                String creator = cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_CREATOR));
 
                 // Create a new BlogModel and add it to the list
-                BlogModel blogModel = new BlogModel(id, title, content, location, image);
+                BlogModel blogModel = new BlogModel(id, title, content, location, image, creator);
                 blogList.add(blogModel);
             } while (cursor.moveToNext());
         }
@@ -204,12 +201,12 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // data save to firebase
-    private void saveDataToFirebase(String title, String content, String location, String imagePath, String id) {
+    private void saveDataToFirebase(String title, String content, String location, String imagePath, String id, String creator) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
         new Thread(() -> {
             try {
-                BlogModel blogPost = new BlogModel(id, title, content, location, imagePath);
+                BlogModel blogPost = new BlogModel(id, title, content, location, imagePath, creator);
 
                 firestore.collection("blogs").document(id)
                         .set(blogPost)
@@ -221,12 +218,12 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // data update firebase
-    private void updateDataInFirebase(String id, String title, String content, String location, String image) {
+    private void updateDataInFirebase(String id, String title, String content, String location, String image, String creator) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
         new Thread(() -> {
             try {
-                BlogModel blogPost = new BlogModel(id, title, content, location, image);
+                BlogModel blogPost = new BlogModel(id, title, content, location, image, creator);
 
                 firestore.collection("blogs").document(id)
                         .set(blogPost)  // Overwrites the existing data in Firebase

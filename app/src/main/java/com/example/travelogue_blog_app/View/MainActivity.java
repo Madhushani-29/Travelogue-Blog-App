@@ -3,7 +3,6 @@ package com.example.travelogue_blog_app.View;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +21,6 @@ import com.example.travelogue_blog_app.Database.Constants;
 import com.example.travelogue_blog_app.R;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import java.util.ArrayList;
 

@@ -4,12 +4,13 @@ public class BlogModel {
     String id, title, content, location, image, creator;
 
     // constructor
-    public BlogModel(String id, String title, String content, String location, String image) {
+    public BlogModel(String id, String title, String content, String location, String image, String creator) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.location = location;
         this.image = image;
+        this.creator = creator;
     }
 
     // getters and setters
@@ -51,5 +52,13 @@ public class BlogModel {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.image = creator;
     }
 }
