@@ -5,11 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.util.Log;
 
-import androidx.annotation.NonNull;
+import com.example.travelogue_blog_app.Utill.CloudinaryHelper;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.example.travelogue_blog_app.Database.Constants;
 import com.example.travelogue_blog_app.Model.BlogModel;
+import com.example.travelogue_blog_app.Utill.NetworkUtils;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
@@ -35,32 +45,31 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // insert data into table
-    public long insertData(String title, String content, String location, String image){
-        // need to write data
-        // then get a writable database
-        SQLiteDatabase db=this.getWritableDatabase();
+    public long insertData(String title, String content, String location, String image, Context context) {
+        // insert data into SQLite database
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values=new ContentValues();
-
-        // id increment auto in query
-        // insert other data
+        ContentValues values = new ContentValues();
         values.put(Constants.C_TITLE, title);
         values.put(Constants.C_CONTENT, content);
         values.put(Constants.C_LOCATION, location);
         values.put(Constants.C_IMAGE, image);
 
-        // insert row
-        // return record id of saved blog
-        long id =db.insert(Constants.TABLE_NAME, null, values);
+        long id = db.insert(Constants.TABLE_NAME, null, values);
 
-        // close db connection
+        // close the database connection
         db.close();
 
+        // check if internet is available
+        if (NetworkUtils.isInternetAvailable(context)) {
+            // Internet is available, save data to Firebase
+            saveDataToFirebase(title, content, location, image, String.valueOf(id));
+        }
         return id;
     }
 
     // update data
-    public void updateData(String id, String title, String content, String location, String image){
+    public void updateData(String id, String title, String content, String location, String image, Context context){
         // need to write data
         // then get a writable database
         SQLiteDatabase db=this.getWritableDatabase();
@@ -80,6 +89,11 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
         // close db connection
         db.close();
+
+        if (NetworkUtils.isInternetAvailable(context)) {
+            // Internet is available, update data in Firebase as well
+            updateDataInFirebase(id, title, content, location, image);
+        }
     }
 
     // get all data from a table
@@ -154,17 +168,25 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // delete single blog
-    public void deleteBlogById(String id){
+    public void deleteBlogById(String id, Context context){
         SQLiteDatabase db = getWritableDatabase();
         db.delete(Constants.TABLE_NAME, Constants.C_ID+ " =?", new String [] {id});
         db.close();
+
+        if (NetworkUtils.isInternetAvailable(context)) {
+            deleteBlogFromFirebase(id);
+        }
     }
 
     // delete all blogs
-    public void deleteAllBlogs(){
+    public void deleteAllBlogs(Context context){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + Constants.TABLE_NAME);
         db.close();
+
+        if (NetworkUtils.isInternetAvailable(context)) {
+            deleteAllBlogsFromFirebase();
+        }
     }
 
     // delete multiple blogs once
@@ -174,5 +196,86 @@ public class BlogDBHelper extends SQLiteOpenHelper {
             db.delete(Constants.TABLE_NAME, Constants.C_ID + " =?", new String[]{id});
         }
         db.close();
+
+        // iterate over a array to delete a set of blogs
+        for (String id : ids) {
+            deleteBlogFromFirebase(id);
+        }
     }
+
+    // data save to firebase
+    private void saveDataToFirebase(String title, String content, String location, String imagePath, String id) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        new Thread(() -> {
+            try {
+                BlogModel blogPost = new BlogModel(id, title, content, location, imagePath);
+
+                firestore.collection("blogs").document(id)
+                        .set(blogPost)
+                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post saved successfully."))
+                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to save blog post: " + e.getMessage()));
+            } catch (Exception e) {
+            }
+        }).start();
+    }
+
+    // data update firebase
+    private void updateDataInFirebase(String id, String title, String content, String location, String image) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        new Thread(() -> {
+            try {
+                BlogModel blogPost = new BlogModel(id, title, content, location, image);
+
+                firestore.collection("blogs").document(id)
+                        .set(blogPost)  // Overwrites the existing data in Firebase
+                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post updated successfully."))
+                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to update blog post: " + e.getMessage()));
+            } catch (Exception e) {
+                Log.e("Firebase", "Error updating blog post in Firebase: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    // delete single blog from Firebase
+    private void deleteBlogFromFirebase(String id) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        new Thread(() -> {
+            try {
+                firestore.collection("blogs").document(id)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post deleted successfully."))
+                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to delete blog post: " + e.getMessage()));
+            } catch (Exception e) {
+                Log.e("Firebase", "Error deleting blog post from Firebase: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    // delete all blogs from Firebase
+    private void deleteAllBlogsFromFirebase() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        new Thread(() -> {
+            try {
+                firestore.collection("blogs")
+                        .get()
+                        .addOnSuccessListener(querySnapshot -> {
+                            for (DocumentSnapshot document : querySnapshot) {
+                                firestore.collection("blogs").document(document.getId())
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Blog post deleted successfully."))
+                                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to delete blog post: " + e.getMessage()));
+                            }
+                        })
+                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to fetch blogs for deletion: " + e.getMessage()));
+            } catch (Exception e) {
+                Log.e("Firebase", "Error deleting all blog posts from Firebase: " + e.getMessage());
+            }
+        }).start();
+    }
+
+
 }

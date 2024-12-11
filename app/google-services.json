@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "93691761220",
-    "project_id": "travelogue-blog-app",
-    "storage_bucket": "travelogue-blog-app.firebasestorage.app"
+    "project_number": "920152014804",
+    "project_id": "travelogue-blog-app-89aa2",
+    "storage_bucket": "travelogue-blog-app-89aa2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:93691761220:android:574a59c13850011bc5e211",
+        "mobilesdk_app_id": "1:920152014804:android:f1ff96c4296b69963b2041",
         "android_client_info": {
           "package_name": "com.example.travelogue_blog_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAPwT_qo4mhe4XFwCLyyGokaGvx0vKrwR4"
+          "current_key": "AIzaSyA6uwrSUjSjGL2nveRPWN5MfwIiQnZ8UfM"
         }
       ],
       "services": {

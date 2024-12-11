@@ -49,4 +49,8 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.circularimageview)
     implementation("com.facebook.android:facebook-android-sdk:17.0.1")
+    implementation("com.google.firebase:firebase-storage:15.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.1.1")
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+
 }

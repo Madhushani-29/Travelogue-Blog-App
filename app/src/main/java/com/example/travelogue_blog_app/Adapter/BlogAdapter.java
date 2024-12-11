@@ -129,7 +129,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.BlogHolder> {
                             .setTitle(R.string.delete_blog_alert_title)
                             .setMessage(R.string.single_delete_confirm_text)
                             .setPositiveButton(R.string.yes_button_text, (dialogConfirm, whichConfirm) -> {
-                                dbHelper.deleteBlogById(id);
+                                dbHelper.deleteBlogById(id, context);
                                 // Refresh blogs by calling onResume
                                 ((MainActivity) context).onResume();
                             })

@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.delete_all_blog_alert_title))
                         .setMessage(getString(R.string.delete_all_confirm_text))
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            dbHelper.deleteAllBlogs();
+                            dbHelper.deleteAllBlogs(this);
                             onResume();
                             Toast.makeText(this, getString(R.string.delete_all_success_toast), Toast.LENGTH_SHORT).show(); // Optional: Show a toast message
                         })

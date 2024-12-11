@@ -24,6 +24,4 @@ public class Constants {
                     + C_LOCATION + " TEXT,"
                     + C_IMAGE + " TEXT"
             + ")";
-
-    public static final String USERS_COLLECTION = "users";
 }

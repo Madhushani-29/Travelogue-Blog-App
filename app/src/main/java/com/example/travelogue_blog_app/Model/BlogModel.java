@@ -1,7 +1,7 @@
 package com.example.travelogue_blog_app.Model;
 
 public class BlogModel {
-    String id, title, content, location, image;
+    String id, title, content, location, image, creator;
 
     // constructor
     public BlogModel(String id, String title, String content, String location, String image) {
