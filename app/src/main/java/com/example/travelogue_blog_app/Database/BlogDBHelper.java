@@ -7,11 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.travelogue_blog_app.Utill.SyncCompleteListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.travelogue_blog_app.Model.BlogModel;
 import com.example.travelogue_blog_app.Utill.NetworkUtils;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -300,6 +302,48 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                         blog.getImage(), blog.getId(), blog.getCreator());
             }
         }
+    }
+
+    public void syncToSqliteDB(Context context, SyncCompleteListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("blogs")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String title = document.getString("title");
+                            String content = document.getString("content");
+                            String location = document.getString("location");
+                            String image = document.getString("image");
+                            String id = document.getString("id");
+                            String creator = document.getString("creator");
+                            BlogModel blog = new BlogModel(id, title, content, location, image, creator);
+                            saveBlogToSQLite(context, blog);
+                        }
+                        // notify that sync is complete
+                        listener.onSyncComplete(true);
+                    } else {
+                        Log.e("FirebaseSync", "Error fetching blogs from Firebase", task.getException());
+                        listener.onSyncComplete(false);
+                    }
+                });
+    }
+
+    private void saveBlogToSQLite(Context context, BlogModel blog) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Constants.C_TITLE, blog.getTitle());
+        values.put(Constants.C_CONTENT, blog.getContent());
+        values.put(Constants.C_LOCATION, blog.getLocation());
+        values.put(Constants.C_IMAGE, blog.getImage());
+        values.put(Constants.C_ID, Integer.parseInt(blog.getId()));
+        values.put(Constants.C_CREATOR, blog.getCreator());
+        values.put(Constants.C_IS_SYNCED, 1);
+
+        db.insert(Constants.TABLE_NAME, null, values);
+        db.close();
     }
 
     //  get a list of unsynced blogs

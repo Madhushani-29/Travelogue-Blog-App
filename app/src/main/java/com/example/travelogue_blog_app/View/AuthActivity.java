@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.example.travelogue_blog_app.Database.FirebaseAuthHelper;
 import com.example.travelogue_blog_app.R;
 import com.google.firebase.auth.FirebaseUser;
@@ -108,9 +109,17 @@ public class AuthActivity extends AppCompatActivity {
         firebaseAuthHelper.signInUser(email, password, new FirebaseAuthHelper.AuthListener() {
             @Override
             public void onSuccess(FirebaseUser user) {
-                // redirect to the home screen after successful login and show a toast
                 Toast.makeText(AuthActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                navigateToHome();
+
+                BlogDBHelper dbHelper = new BlogDBHelper(AuthActivity.this);
+
+                dbHelper.syncToSqliteDB(AuthActivity.this, isSuccess -> {
+                    if (isSuccess) {
+                        navigateToHome();
+                    } else {
+                        Toast.makeText(AuthActivity.this, "Data sync failed!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -119,6 +128,7 @@ public class AuthActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void onSignupClick(String email, String password) {
         firebaseAuthHelper.signUpUser(email, password, new FirebaseAuthHelper.AuthListener() {

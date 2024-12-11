@@ -7,8 +7,6 @@ public class Constants {
     public static final int DB_VERSION=3;
     //table name
     public static final String TABLE_NAME="Travel_Blogs_Table";
-    // table to save not sync blogs
-    public static final String OFFLINE_TABLE_NAME="Offline_Blogs_Table";
 
     //table columns
     public static final String C_ID="id";

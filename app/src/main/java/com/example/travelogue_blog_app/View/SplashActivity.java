@@ -31,13 +31,20 @@ public class SplashActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = firebaseAuthHelper.getCurrentUser();
 
+        Handler handler = new Handler();
+
         // check user is logged in or no
         // if there are then navigate to main scrreen
         if (currentUser != null) {
-            navigateToMainActivity();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
+                }
+            }, 6000);
         } else {
             // else display the splash screen
-            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -46,10 +53,5 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }, 6000);
         }
-    }
-
-    private void navigateToMainActivity() {
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-        finish();
     }
 }
