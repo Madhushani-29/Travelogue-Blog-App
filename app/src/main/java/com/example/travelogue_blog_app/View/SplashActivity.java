@@ -9,6 +9,7 @@ import android.os.Handler;
 import com.example.travelogue_blog_app.Database.BlogDBHelper;
 import com.example.travelogue_blog_app.Database.FirebaseAuthHelper;
 import com.example.travelogue_blog_app.R;
+import com.example.travelogue_blog_app.Utill.NetworkUtils;
 import com.google.firebase.auth.FirebaseUser;
 
 
@@ -20,6 +21,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onStart();
         BlogDBHelper dbHelper = new BlogDBHelper(this);
         dbHelper.syncWithFirebase(this);
+        dbHelper.deleteFirebasePendings(this);
     }
 
     @Override

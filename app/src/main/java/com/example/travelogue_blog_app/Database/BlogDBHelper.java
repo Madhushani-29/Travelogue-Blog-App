@@ -2,6 +2,7 @@ package com.example.travelogue_blog_app.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -17,6 +18,10 @@ import com.example.travelogue_blog_app.Utill.NetworkUtils;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -177,6 +182,9 @@ public class BlogDBHelper extends SQLiteOpenHelper {
 
         if (NetworkUtils.isInternetAvailable(context)) {
             deleteBlogFromFirebase(id);
+        } else {
+            // if no internet, store the ID for later syncing
+            storeIdForLaterSync(id, context);
         }
     }
 
@@ -192,16 +200,19 @@ public class BlogDBHelper extends SQLiteOpenHelper {
     }
 
     // delete multiple blogs once
-    public void deleteMultipleBlogsByIds(ArrayList<String> ids) {
+    public void deleteMultipleBlogsByIds(ArrayList<String> ids, Context context) {
         SQLiteDatabase db = getWritableDatabase();
         for (String id : ids) {
             db.delete(Constants.TABLE_NAME, Constants.C_ID + " =?", new String[]{id});
         }
         db.close();
 
-        // iterate over a array to delete a set of blogs
-        for (String id : ids) {
-            deleteBlogFromFirebase(id);
+        if (NetworkUtils.isInternetAvailable(context)) {
+            for (String id : ids) {
+                deleteBlogFromFirebase(id);
+            }
+        } else {
+            storeIdsForLaterSync(ids, context);
         }
     }
 
@@ -346,7 +357,6 @@ public class BlogDBHelper extends SQLiteOpenHelper {
                 });
     }
 
-
     // save firebase blogs to sqlite database
     private void saveBlogToSQLite(Context context, BlogModel blog) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -394,4 +404,62 @@ public class BlogDBHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + Constants.TABLE_NAME); // Deletes all rows from the table
         db.close();
     }
+
+    // add for the pending delete list
+    private void storeIdForLaterSync(String id, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("sync_preferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> pendingIds = sharedPreferences.getStringSet("pending_blog_deletions", new HashSet<>());
+        pendingIds.add(id);
+        editor.putStringSet("pending_blog_deletions", pendingIds);
+        editor.apply();
+        Log.d("Sync", "Blog ID stored for later sync: " + id);
+    }
+
+    private void storeIdsForLaterSync(List<String> ids, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("sync_preferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Set<String> pendingIds = new HashSet<>(sharedPreferences.getStringSet("pending_blog_deletions", new HashSet<>()));
+        pendingIds.addAll(ids);
+
+        editor.putStringSet("pending_blog_deletions", pendingIds);
+        editor.apply();
+        Log.d("Sync", "Stored blog IDs for later sync: " + pendingIds);
+    }
+
+    // delete pending blogs
+    public void deleteFirebasePendings(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("sync_preferences", Context.MODE_PRIVATE);
+        Set<String> pendingIds = new HashSet<>(sharedPreferences.getStringSet("pending_blog_deletions", new HashSet<>()));
+
+        if (pendingIds.isEmpty()) {
+            Log.d("Sync", "No pending deletions to process.");
+            return;
+        }
+
+        if (NetworkUtils.isInternetAvailable(context)) {
+            SQLiteDatabase db = getWritableDatabase();
+            Iterator<String> iterator = pendingIds.iterator();
+
+            while (iterator.hasNext()) {
+                String id = iterator.next();
+
+                deleteBlogFromFirebase(id);
+                db.delete(Constants.TABLE_NAME, Constants.C_ID + " =?", new String[]{id});
+                iterator.remove();
+            }
+
+            db.close();
+
+            // Update SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putStringSet("pending_blog_deletions", pendingIds);
+            editor.apply();
+            Log.d("Sync", "Processed and cleared all pending blog deletions.");
+        } else {
+            Log.e("Sync", "No internet available. Can't process pending deletions.");
+        }
+    }
+
 }

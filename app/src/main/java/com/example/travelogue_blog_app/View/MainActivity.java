@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.delete_multiple_blog_alert_title))
                         .setMessage(getString(R.string.delete_multiple_confirm_text))
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            dbHelper.deleteMultipleBlogsByIds(selectedIds);
+                            dbHelper.deleteMultipleBlogsByIds(selectedIds, this);
                             retrieveBlogs(currentOrderByStatus); // Refresh the blog list
                             selectedIds.clear(); // Clear selection after deletion
                             Toast.makeText(this, getString(R.string.delete_multiple_success_toast), Toast.LENGTH_SHORT).show();
