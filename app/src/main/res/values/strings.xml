@@ -65,9 +65,9 @@
     <string name="sign_up_successful">Sign-Up successful</string>
     <string name="login_successful">Login successful</string>
     <string name="new_user_text">Don\'t have an account, Signup</string>
-    <string name="cloud_name">dbcadswtf</string>
-    <string name="api_key">455125535466135</string>
-    <string name="api_secret">eCzoSAGq0wTccFzfMhfq4dMW1vQ</string>
+    <string name="cloud_name">###</string>
+    <string name="api_key">###</string>
+    <string name="api_secret">###</string>
     <string name="logout_alert_title">Confirm Logout</string>
     <string name="logout_alert_content">Are you sure want to logout?</string>
 </resources>
